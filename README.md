@@ -41,7 +41,7 @@ Start up the server by running the `server.py` script. Using your Vita browse to
 - The functions are called from the `include/exploit.js` file. Simply uncomment them and modify as you wish;
 - The following tests are currently implemented for firmwares 3.00, 3.15 and 3.18:
   - `Module dumping test` -> Based on CodeLion/BrianBTB/BBalling1's module dumping code and complemented by nas's sysmodule loading code. Forces all user modules to be loaded into memory and dumps them to "dumps" folder
-  - `Memory test` -> A simple memory alloc/free test using the SceKernelLib syscalls
+  - `Memory test` -> A simple memory alloc/free test using the SceLibKernel syscalls
   - `Socket connection test` -> Original (akai) socket test to send messages to/from the Vita
   - `Directory listing test` -> Original (akai) test to list directories inside the Vita
   - `File retrieval test` -> Original (akai) test to find and dump user files from the Vita
