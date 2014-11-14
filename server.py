@@ -11,7 +11,7 @@ import SocketServer, SimpleHTTPServer
 import urlparse, urllib2
 from capstone import CS_MODE_THUMB, CS_MODE_ARM, Cs, CS_ARCH_ARM, CS_MODE_LITTLE_ENDIAN
 
-PORT = 8888
+PORT = 80
 DUMP_PATH = "dumps"
 
 """
@@ -198,6 +198,7 @@ s.connect(("gmail.com",80))
 localIP = s.getsockname()[0]
 s.close()
 
+print "With HOSTAPD use 'ip addr show wlan0'"
 print "Starting server on " + localIP + ":" + str(PORT)
 
 """

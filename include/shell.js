@@ -341,6 +341,24 @@ function shell(aspace)
                 var begaddr = Number(cmd_s[1]);
                 disp_minfo(aspace, begaddr);
             }
+            else if(cmd_s[0] == 'ls') {
+                if (cmd_s.length < 2){
+                    logdbg("ls app0:<path>");
+                    continue;
+                }
+                var path = cmd_s[1];
+                list_dir(path);
+				retrieve_file("app0:eboot.bin", "eboot.bin");
+            }
+            else if(cmd_s[0] == 'wget') {
+                if (cmd_s.length < 3){
+                    logdbg("wget app0:<path> <filename>");
+                    continue;
+                }
+                var path = cmd_s[1];
+                var filename = cmd_s[2];
+				retrieve_file(path, filename);
+            }
             else if(cmd_s[0] == 'scanback') {
                 if (cmd_s.length < 3){
                     logdbg("scanback <begaddr> <step>");
@@ -366,6 +384,7 @@ function shell(aspace)
 				logdbg("dispim <beginaddr> <n>");
 				logdbg("dispminf <beginaddr>");
 				logdbg("scanback <begaddr> <step>");
+				logdbg("ls app0:<path>");
 				logdbg("help");
 				logdbg("reload");
 				logdbg("exit\n");
