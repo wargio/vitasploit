@@ -8,6 +8,11 @@ sceWebKitProcessFcns_v300 =
 	sceSysmoduleLoadModule	:	0x000011b20,
 }
 
+sceCommonDialogFcns_v300 =
+{
+	sceSysModuleLoadModuleWithArgs : 0x0000e2d0,
+}
+
 sceLibcFcns_v300 =
 {
 	fopen  : 0x00004565,
@@ -67,6 +72,11 @@ sceKernelFcns_v300 =
 sceWebKitProcessFcns_v315_v318 =
 {
 	sceSysmoduleLoadModule	:	0x0000124f8,
+}
+
+sceCommonDialogFcns_v315_v318 =
+{
+	sceSysModuleLoadModuleWithArgs : 0x0000ba2c,
 }
 
 sceLibcFcns_v315_v318 =
@@ -406,9 +416,9 @@ sceNetFcns_v315_v318 =
 sceKernelFcns_v315_v318 =
 {
 	// Syscalls
-	sceKernelAllocMemBlock	: 0x000054dc,
-	sceKernelGetMemBlockBase	: 0x000054cc,
-	sceKernelFreeMemBlock	: 0x000054bc,
+	sceKernelAllocMemBlock	: 0x000054ec,
+	sceKernelGetMemBlockBase	: 0x000054dc,
+	sceKernelFreeMemBlock	: 0x000054cc,
 	sceKernelGetModuleList  : 0x00005b3c,
 	sceKernelGetModuleInfo  : 0x00005b4c,
 	
@@ -650,7 +660,7 @@ sceKernelFcns_v315_v318 =
     __sce_aeabi_ldiv0  : 0x000053c1,
     sceKernelSignalLwCondTo  : 0x00009dc5,
     sceKernelSetTimerTime  : 0x00009e09,
-    sceKernelAtomicAddUnless64  : 0x000029ac
+    sceKernelAtomicAddUnless64  : 0x000029ac,
 }
 
 version_deps =
@@ -678,6 +688,11 @@ version_deps =
 		"SceWebKitProcess":
 		{
 			functions : sceWebKitProcessFcns_v300, 
+            gadgets : {}
+		},
+		"SceCommonDialog":
+		{
+			functions : sceCommonDialogFcns_v300, 
             gadgets : {}
 		},
         "SceLibKernel":
@@ -728,6 +743,11 @@ version_deps =
 			functions : sceWebKitProcessFcns_v315_v318, 
             gadgets : {}
 		},
+		"SceCommonDialog":
+		{
+			functions : sceCommonDialogFcns_v315_v318, 
+            gadgets : {}
+		},
         "SceLibKernel":
         { 
             functions : sceKernelFcns_v315_v318, 
@@ -771,6 +791,11 @@ version_deps =
 		"SceWebKitProcess":
 		{
 			functions : sceWebKitProcessFcns_v315_v318, 
+            gadgets : {}
+		},
+		"SceCommonDialog":
+		{
+			functions : sceCommonDialogFcns_v315_v318,  
             gadgets : {}
 		},
         "SceLibKernel":

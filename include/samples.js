@@ -109,9 +109,9 @@ function retrieve_file(fname, loc_name)
 }
 
 /*
-    Dump all visible modules using SceLibKernel syscalls
+    List and dump all visible modules using SceLibKernel syscalls
 */
-function dump_modules()
+function list_modules(doDump)
 {
 	var scekernel = libraries.SceLibKernel.functions;
 	
@@ -121,6 +121,10 @@ function dump_modules()
 	var mod_info_addr = allocate_memory(MOD_INFO_SIZE * 4);
     var mod_num_addr = allocate_memory(0x4);
     aspace32[mod_num_addr / 4] = MAX_MODULES;
+	
+	var mod_segments = [];
+    var mod_offsets = {};
+    var mod_sizes = {};
 
     var list_result = scekernel.sceKernelGetModuleList(0xFF, mod_list_addr, mod_num_addr);
 	
@@ -134,7 +138,7 @@ function dump_modules()
 	var mod_num = aspace32[mod_num_addr / 4];
     do_read(aspace, mod_list_addr, mod_num * 4);
 
-    for (i = 0; i < mod_num * 4; i += 4)
+    for (var i = 0; i < mod_num * 4; i += 4)
 	{
 		var info_result = scekernel.sceKernelGetModuleInfo(aspace32[(mod_list_addr + i) / 4], mod_info_addr);
         
@@ -149,7 +153,7 @@ function dump_modules()
 		var mod_name = read_string(mod_name_addr);
         
 		logdbg("Found module: " +  mod_name);
-        for (j = 0; j <= 4; j++)
+        for (var j = 0; j <= 4; j++)
 		{
 			var mod_seg_addr = mod_seg_info_addr + j * 0x18;
 			
@@ -164,27 +168,62 @@ function dump_modules()
             var mod_memsz = aspace32[(mod_seg_addr + 12) / 4];
             logdbg("Module segment vaddr: 0x" + mod_vaddr.toString(16));
             logdbg("Module segment memsz: 0x" + mod_memsz.toString(16));
-            do_dump(aspace, mod_vaddr, mod_memsz, mod_name + ".seg" + j.toString()+ ".bin");
+			
+			mod_segments.push([mod_vaddr, mod_memsz, mod_name]);
+            mod_offsets[mod_name + ".seg"+ j.toString()] = mod_vaddr;
+            mod_sizes[mod_name + ".seg"+ j.toString()] = mod_memsz;
+			
+			if (doDump)
+				do_dump(aspace, mod_vaddr, mod_memsz, mod_name + ".seg" + j.toString()+ ".bin");
         }
 	}
+	return [mod_segments, mod_offsets, mod_sizes];
 }
 
 /*
-    Brute-force load all possible user modules using sceSysmoduleLoadModule
+    Brute-force load all possible user modules using sceSysmoduleLoadModule and sceSysModuleLoadModuleWithArgs
 */
 function load_sysmodules()
 {
 	var scewkproc = libraries.SceWebKitProcess.functions;
+	var scecdiag = libraries.SceCommonDialog.functions;
 	
-	for(i = 1; i < 0x100; i++)
+	var mod_start_ptr = allocate_memory(0x10);
+	
+	for(var i = 1; i < 0x100; i++)
 	{
-		var result = scewkproc.sceSysmoduleLoadModule(i);
+		var load_result = scewkproc.sceSysmoduleLoadModule(i);
 		
-		if (result != 0)
+		if (load_result != 0)
 		{
-			logdbg("Failed to load module #" + i.toString() + ": 0x" + result.toString(16));
+			logdbg("Failed to load module #" + i.toString() + ": 0x" + load_result.toString(16));
 		}
 	}
+	
+	var loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x80000001, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
+	loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x80000002, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
+	loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x80000003, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
+	loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x80000004, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
+	loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x8000001b, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
+	loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x8000001e, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
+	loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x80000021, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
+	loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x80000022, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
+	loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x80000023, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
+	loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x80000024, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
+	loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x80000026, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
+	loadargs_result = scecdiag.sceSysModuleLoadModuleWithArgs(0x80000027, 0, 0, mod_start_ptr);
+	logdbg("sceSysModuleLoadModuleWithArgs: 0x" + loadargs_result.toString(16));
 }
 
 /*
